@@ -17,5 +17,10 @@ Route::get('/', function () {
     return view('products.index');
 });
 
-Route::get('/login',[AuthController::class, 'login']);
-Route::get('/registration',[AuthController::class, 'registration']);
+Route::get('/login', [AuthController::class, 'login']);
+Route::get('/registration', [AuthController::class, 'registration']);
+Route::get('/inventory', [AuthController::class, 'inventory']);
+Route::get('/analytics', [AuthController::class, 'analytics']);
+Route::get('/inventory', [AuthController::class, 'inventory']);
+Route::get('/reports', [AuthController::class, 'reports']);
+Route::get('/logs', [AuthController::class, 'logs']);

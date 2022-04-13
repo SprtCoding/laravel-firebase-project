@@ -1,53 +1,66 @@
 @extends('layouts.app')
 @section('content')
-    <section class="vh-100" style="background-color: #eee;">
+    <section class="vh-100" style="background-color: #fff;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col col-xl-10">
                     <div class="alert alert-success" id="msgID" style="display: none">
                         <h4 id="msgBody" class="text-white"></h4>
                     </div>
-                    <div class="card" style="border-radius: 1rem;">
+                    <div class="card mask-custom py-5" style="border-radius: 1rem;">
                         <div class="row g-0">
-                            <div class="col-md-6 col-lg-5 d-none d-md-block">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
-                                    alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                            <div class="col-md-6 col-lg-6 d-none d-md-block">
+                                <div>
+                                    <h1 class="logo fw-bold">i-ProSeS</h1>
+                                </div>
+                                <img src="{{ URL('img/RICHBLITZlogo.png') }}" alt="images" class="img-thumbnail">
                             </div>
-                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="col-md-6 col-lg-5 d-flex align-items-center">
                                 <div class="card-body p-4 p-lg-5 text-black">
 
                                     <form>
 
                                         <div class="d-flex align-items-center mb-3 pb-1">
-                                            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                                            <span class="h1 fw-bold mb-0">Logo</span>
+                                            <span class="h1 fw-bold mb-0" style="color: #A6A6A8">Welcome back!</span>
                                         </div>
 
-                                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account
+                                        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">
+                                            Login to access
+                                            <strong>i-ProSeS</strong>
                                         </h5>
 
                                         <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example17">Email address</label>
                                             <input id="email" type="email" id="form2Example17"
                                                 class="form-control form-control-lg" placeholder="sample@gmail.com" />
+                                            <label class="form-label" for="form2Example17"><i
+                                                    class="fa-solid fa-user"></i> Email address</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <label class="form-label" for="form2Example27">Password</label>
                                             <input id="password" type="password" id="form2Example27"
                                                 class="form-control form-control-lg" placeholder="Password" />
+                                            <label class="form-label" for="form2Example27"><i
+                                                    class="fa-solid fa-lock"></i> Password</label>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center  mb-4">
+                                            <!-- Checkbox -->
+                                            <div class="form-check">
+                                                <input class="form-check-input me-2" type="checkbox" value=""
+                                                    id="form2Example3" />
+                                                <label class="form-check-label" for="form2Example3">
+                                                    Remember me
+                                                </label>
+                                            </div>
+                                            <a href="#!" class="text-body">Forgot password?</a>
                                         </div>
 
                                         <div class="pt-1 mb-4">
-                                            <button id="login_btn" class="btn btn-dark btn-lg btn-block"
-                                                type="button">Login</button>
+                                            <button id="login_btn" class="btn btn-primary btn-md" type="button"
+                                                style="background-color: #35C496">Login</button>
                                         </div>
-
-                                        <a class="small text-muted" href="#!">Forgot password?</a>
                                         <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a
                                                 href="/registration" style="color: #393f81;">Register here</a></p>
-                                        <a href="#!" class="small text-muted">Terms of use.</a>
-                                        <a href="#!" class="small text-muted">Privacy policy</a>
                                     </form>
 
                                 </div>
@@ -56,12 +69,18 @@
                     </div>
                 </div>
             </div>
+            <div class="loader-wrapper">
+                <span class="loader"><span class="loader-inner"></span></span>
+            </div>
         </div>
     </section>
 @endsection
 
 @push('script')
     <script>
+        $(window).on("load", function() {
+            $(".loader-wrapper").fadeOut("slow");
+        });
         $(document).ready(function() {
             const firebaseConfig = {
                 apiKey: "AIzaSyBeQI2S_A-hJghcxi921OBP8pd5ap-V0D8",
@@ -77,6 +96,26 @@
             firebase.initializeApp(firebaseConfig);
             firebase.analytics();
 
+            //get date
+            var today = new Date();
+
+            var month = today.getMonth();
+            var year = today.getFullYear();
+            var date = today.getDate();
+            var monthArray = new Array("January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December");
+
+            var current_date = `${monthArray[month]} ${date}, ${year}`;
+
+            var hours = today.getHours();
+            var minutes = today.getMinutes();
+            var seconds = today.getSeconds();
+            var current_time = `${hours}:${minutes}:${seconds}`;
+
+            console.log(current_date + " " + current_time);
+
+            var userID;
+
             $("#login_btn").on('click', function() {
                 var email = document.getElementById('email').value;
                 var password = document.getElementById('password').value;
@@ -90,7 +129,10 @@
                         // Signed in
                         const user = firebase.auth().currentUser;
                         const userEmail = user.email;
+                        userID = user.uid;
+                        location.replace('/');
                         MsgSession(userEmail);
+
                         // ...
                     })
                     .catch((error) => {
